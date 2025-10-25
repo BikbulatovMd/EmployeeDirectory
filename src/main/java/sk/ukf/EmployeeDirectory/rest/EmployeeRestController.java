@@ -9,55 +9,64 @@ import sk.ukf.EmployeeDirectory.service.EmployeeService;
 import java.net.URI;
 import java.util.List;
 
+import  org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+
+import sk.ukf.EmployeeDirectory.dto.ApiResponse;
+import sk.ukf.EmployeeDirectory.entity.Employee;
+
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeRestController {
-
     private final EmployeeService service;
-
     public EmployeeRestController(EmployeeService service) {
         this.service = service;
     }
-
-    // GET /api/employees — список
     @GetMapping
-    public List<Employee> getAll() {
-        return service.findAll();
+    public ResponseEntity<ApiResponse<List<Employee>>> getAll() {
+        var list = service.findAll();
+        return ResponseEntity.ok(ApiResponse.success(list, "Employees fetched successfully"));
     }
-
-    // GET /api/employees/{id} — один по id
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getOne(@PathVariable int id) {
-        Employee e = service.findById(id);
-        return (e == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(e);
+    public ResponseEntity<ApiResponse<Employee>> getOne(@PathVariable int id) {
+        var e = service.findById(id);
+        if (e == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("Employee with id " + id + " not found"));
+        }
+        return ResponseEntity.ok(ApiResponse.success(e, "Employee fetched successfully"));
     }
-
-    // POST /api/employees — создать
     @PostMapping
-    public ResponseEntity<Employee> create(@RequestBody Employee input, UriComponentsBuilder uri) {
-        // гарантируем INSERT, а не случайный UPDATE
-        input.setId(0);
-        Employee saved = service.save(input);
+    public ResponseEntity<ApiResponse<Employee>> create(@Valid @RequestBody Employee input,
+                                                        UriComponentsBuilder uri) {
+        input.setId(0); // гарантируем INSERT
+        var saved = service.save(input);
 
-        URI location = uri.path("/api/employees/{id}").buildAndExpand(saved.getId()).toUri();
-        return ResponseEntity.created(location).body(saved); // 201 + Location
+        var location = uri.path("/api/employees/{id}").buildAndExpand(saved.getId()).toUri();
+        return ResponseEntity.created(location)
+                .body(ApiResponse.success(saved, "Employee created successfully"));
     }
-
-    // PUT /api/employees/{id} — обновить
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> update(@PathVariable int id, @RequestBody Employee input) {
-        if (service.findById(id) == null) return ResponseEntity.notFound().build();
-        // путь — источник истины
+    public ResponseEntity<ApiResponse<Employee>> update(@PathVariable int id,
+                                                        @Valid @RequestBody Employee input) {
+        if (service.findById(id) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("Employee with id " + id + " not found"));
+        }
         input.setId(id);
-        Employee saved = service.save(input); // save() выполнит UPDATE
-        return ResponseEntity.ok(saved);
+        var saved = service.save(input); // выполнит UPDATE
+        return ResponseEntity.ok(ApiResponse.success(saved, "Employee updated successfully"));
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable int id) {
+        if (service.findById(id) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("Employee with id " + id + " not found"));
+        }
+        service.deleteById(id);
+        return ResponseEntity.ok(ApiResponse.success(null, "Employee deleted successfully"));
     }
 
-    // DELETE /api/employees/{id} — удалить
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
-        if (service.findById(id) == null) return ResponseEntity.notFound().build();
-        service.deleteById(id);
-        return ResponseEntity.noContent().build(); // 204
-    }
 }

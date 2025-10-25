@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 import sk.ukf.EmployeeDirectory.dao.EmployeeRepository;
 import sk.ukf.EmployeeDirectory.entity.Employee;
 import java.util.List;
-
+import sk.ukf.EmployeeDirectory.exception.ObjectNotFoundException;
+import sk.ukf.EmployeeDirectory.exception.EmailAlreadyExistsException;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -27,16 +28,33 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findById(int id) {
-        return repo.findById(id).orElse(null);
+        return repo.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Employee with id " + id + " not found"));
     }
-
     @Override
-    public Employee save(Employee employee) {
-        return repo.save(employee);
-    }
+    public Employee save(Employee e) {
+        String email = e.getEmail();
 
+        if (e.getId() == 0) { // create
+            if (repo.existsByEmail(email)) {
+                throw new EmailAlreadyExistsException("Email " + email + " already exists");
+            }
+        } else { // update
+            repo.findByEmail(email).ifPresent(other -> {
+                if (other.getId() != e.getId()) {
+                    throw new EmailAlreadyExistsException("Email " + email + " already exists");
+                }
+            });
+        }
+
+        return repo.save(e);
+    }
     @Override
     public void deleteById(int id) {
+        if (!repo.existsById(id)) {
+            throw new ObjectNotFoundException("Employee with id " + id + " not found");
+        }
         repo.deleteById(id);
     }
+
 }

@@ -3,6 +3,10 @@ package sk.ukf.EmployeeDirectory.entity;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
+
 
 @Entity
 @Table(name = "employee")
@@ -13,15 +17,26 @@ public class Employee {
     private int id;
 
     @Column(name = "first_name")
+    @NotBlank(message = "First name cannot be empty")
+    @Size(min = 2, max = 50, message = "first name must have 2 between 50 characters")
     private String firstName;
 
     @Column(name = "last_name")
+    @NotBlank(message = "Last name cannot be empty")
+    @Size(min = 2, max = 50, message = "last name must have 2 between 50 characters")
     private String lastName;
 
     @Column(name = "birth_date")
     private Date birth_date;
 
     @Column(name = "email")
+    @NotBlank(message = "Email cannot be empty")
+    @Size(max = 254, message = "Email must be at most 254 characters")
+    @Pattern(
+            regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$",
+            flags = Pattern.Flag.CASE_INSENSITIVE,
+            message = "Invalid email format"
+    )
     private String email;
 
     @Column(name = "phone")

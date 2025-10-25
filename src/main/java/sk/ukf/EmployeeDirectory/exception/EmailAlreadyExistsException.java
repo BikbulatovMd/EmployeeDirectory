@@ -1,2 +1,5 @@
-package sk.ukf.EmployeeDirectory.exception;public class EmailAlreadyExistsException {
+package sk.ukf.EmployeeDirectory.exception;
+
+public class EmailAlreadyExistsException extends RuntimeException {
+    public EmailAlreadyExistsException(String message) { super(message); }
 }
