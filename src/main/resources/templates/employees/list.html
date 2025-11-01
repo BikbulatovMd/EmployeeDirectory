@@ -1,0 +1,63 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Employees</title>
+    <style>
+        :root{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--border:#1f2937;--accent:#22c55e;--accent2:#60a5fa;--danger:#ef4444;--r:14px}
+        *{box-sizing:border-box}
+        body{margin:0;background:linear-gradient(180deg,#0b1020,#0f172a);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+        .container{max-width:1000px;margin:32px auto;padding:0 16px}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:14px 18px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r)}
+        .brand{font-weight:700}
+        .badge{padding:4px 8px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px}
+        .table{width:100%;border-collapse:separate;border-spacing:0}
+        th,td{padding:12px 14px;border-bottom:1px solid var(--border);text-align:left}
+        thead th{color:var(--muted);font-weight:600}
+        tbody tr:hover{background:rgba(255,255,255,.02)}
+        .actions{display:flex;gap:8px}
+        .btn{display:inline-block;padding:8px 12px;border-radius:12px;text-decoration:none;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text)}
+        .btn-success{background:linear-gradient(180deg,#34d399,var(--accent));border-color:#16a34a}
+        .btn-primary{background:linear-gradient(180deg,var(--accent2),#2563eb);border-color:#1d4ed8}
+        .btn-danger{background:linear-gradient(180deg,#f87171,var(--danger));border-color:#b91c1c}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="brand">Employee Directory</div>
+    </div>
+
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h1 style="margin:0">Employees</h1>
+            <a class="btn btn-success" th:href="@{/employees/new}">+ Add new employee</a>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th><th>First name</th><th>Last name</th><th>Job title</th><th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="e : ${employees}">
+                <td th:text="${e.id}">1</td>
+                <td th:text="${e.firstName}">John</td>
+                <td th:text="${e.lastName}">Doe</td>
+                <td th:text="${e.job_title}">Software Engineer</td>
+                <td class="actions">
+                    <a class="btn btn-primary" th:href="@{|/employees/${e.id}|}">Detail</a>
+                    <form th:action="@{|/employees/${e.id}|}" method="post">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button class="btn btn-danger" type="submit" onclick="return confirm('Delete?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

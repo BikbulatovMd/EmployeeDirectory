@@ -6,6 +6,8 @@ import java.util.Date;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;
+import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
 
 
 @Entity
@@ -26,8 +28,9 @@ public class Employee {
     @Size(min = 2, max = 50, message = "last name must have 2 between 50 characters")
     private String lastName;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Column(name = "birth_date")
-    private Date birth_date;
+    private LocalDate birth_date;
 
     @Column(name = "email")
     @NotBlank(message = "Email cannot be empty")
@@ -54,10 +57,10 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, Date birth_date,
-                    String email, String phone, String job_title, Double salary, Integer full_time) {
+
+    public Employee(String firstName, String lastName, LocalDate birth_date, String email, String phone, String job_title, Double salary, Integer full_time) {
         this.firstName = firstName;
-        this.lastName = lastName;
+        this.lastName  = lastName;
         this.birth_date = birth_date;
         this.email = email;
         this.phone = phone;
@@ -65,6 +68,7 @@ public class Employee {
         this.salary = salary;
         this.full_time = full_time;
     }
+
 
     public int getId() {
         return id;
@@ -90,11 +94,11 @@ public class Employee {
         this.lastName = lastName;
     }
 
-    public Date getBirth_date() {
+    public LocalDate getBirth_date() {
         return birth_date;
     }
 
-    public void setBirth_date(Date birth_date) {
+    public void setBirth_date(LocalDate birth_date) {
         this.birth_date = birth_date;
     }
 
@@ -151,5 +155,9 @@ public class Employee {
                 ", salary=" + salary +
                 ", full_time=" + full_time +
                 '}';
+    }
+
+    public void setFullTime(int i) {
+
     }
 }

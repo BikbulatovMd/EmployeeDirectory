@@ -1,0 +1,48 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Employee detail</title>
+  <style>
+    :root{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--border:#1f2937;--r:14px}
+    body{margin:0;background:linear-gradient(180deg,#0b1020,#0f172a);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .container{max-width:900px;margin:32px auto;padding:0 16px}
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:14px 18px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px}
+    .row{margin:8px 0}
+    .label{display:inline-block;width:160px;color:var(--muted);font-weight:600}
+    a{color:#93c5fd}
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>Employee Directory</div>
+    <div><a th:href="@{/employees}">Back to list</a></div>
+  </div>
+
+  <div class="card">
+    <h1 style="margin-top:0">Employee detail</h1>
+
+    <div class="row"><span class="label">ID:</span> <span th:text="${employee.id}">1</span></div>
+    <div class="row"><span class="label">Name:</span>
+      <span th:text="${employee.firstName} + ' ' + ${employee.lastName}">John Doe</span>
+    </div>
+    <div class="row"><span class="label">Birth date:</span> <span th:text="${employee.birth_date}">1990-01-01</span></div>
+    <div class="row"><span class="label">Email:</span> <span th:text="${employee.email}">john@doe.com</span></div>
+    <div class="row"><span class="label">Phone:</span> <span th:text="${employee.phone}">+421...</span></div>
+    <div class="row"><span class="label">Job title:</span> <span th:text="${employee.job_title}">Software Engineer</span></div>
+    <div class="row"><span class="label">Salary:</span> <span th:text="${employee.salary}">1200</span></div>
+    <div class="row"><span class="label">Employment:</span>
+      <span th:switch="${employee.full_time}">
+        <span th:case="1">Plný úväzok</span>
+        <span th:case="2">Čiastočný úväzok</span>
+        <span th:case="3">Dohoda</span>
+        <span th:case="4">Stážista/Praktikant</span>
+        <span th:case="*">Unknown</span>
+      </span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

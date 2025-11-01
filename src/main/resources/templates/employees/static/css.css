@@ -1,0 +1,61 @@
+:root {
+    --bg:#0f172a;        /* тёмный фон */
+    --card:#111827;      /* карточки/таблицы */
+    --text:#e5e7eb;      /* основной текст */
+    --muted:#9ca3af;     /* вторичный текст */
+    --accent:#22c55e;    /* зелёные акценты */
+    --accent-2:#60a5fa;  /* синие акценты */
+    --danger:#ef4444;    /* удаление */
+    --border:#1f2937;    /* границы */
+    --radius:14px;
+}
+
+* { box-sizing: border-box; }
+html, body { height:100%; }
+body {
+    margin:0; font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    background:linear-gradient(180deg, #0b1020, #0f172a);
+    color:var(--text);
+}
+
+.container { max-width:1000px; margin:32px auto; padding:0 16px; }
+
+.header {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:20px; padding:14px 18px; background:rgba(255,255,255,.02);
+    border:1px solid var(--border); border-radius:var(--radius);
+    backdrop-filter: blur(8px);
+}
+.brand { font-weight:700; letter-spacing:.3px; }
+.nav a { color:var(--muted); text-decoration:none; margin-left:14px; }
+.nav a:hover { color:var(--text); }
+
+.card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:18px; box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+.table { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; }
+.table th, .table td { padding:12px 14px; border-bottom:1px solid var(--border); text-align:left; }
+.table thead th { color:var(--muted); font-weight:600; }
+.table tbody tr:hover { background:rgba(255,255,255,.02); }
+
+.actions { display:flex; gap:8px; }
+.btn {
+    display:inline-block; padding:8px 12px; border-radius:12px; text-decoration:none;
+    border:1px solid var(--border); background:rgba(255,255,255,.03); color:var(--text);
+}
+.btn:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,.25); }
+.btn-primary { background:linear-gradient(180deg, var(--accent-2), #2563eb); border-color:#1d4ed8; }
+.btn-success { background:linear-gradient(180deg, #34d399, var(--accent)); border-color:#16a34a; }
+.btn-danger  { background:linear-gradient(180deg, #f87171, var(--danger)); border-color:#b91c1c; }
+.btn-ghost   { background:transparent; }
+
+.form .row { margin:16px 0; }
+.form label { display:block; margin-bottom:6px; color:var(--muted); font-weight:600; }
+.form input, .form select {
+    width:100%; padding:10px 12px; border-radius:12px; outline:none;
+    background:#0b1222; border:1px solid var(--border); color:var(--text);
+}
+.form .radios label { font-weight:400; margin-right:16px; }
+.badge { padding:4px 8px; border-radius:999px; border:1px solid var(--border); color:var(--muted); }
