@@ -2,7 +2,6 @@ package sk.ukf.EmployeeDirectory.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;

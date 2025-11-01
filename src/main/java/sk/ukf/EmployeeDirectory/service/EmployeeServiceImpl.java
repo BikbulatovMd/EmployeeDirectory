@@ -35,7 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee save(Employee e) {
         String email = e.getEmail();
 
-        if (e.getId() == 0) { // create
+        if (e.getId() == 0) {
             if (repo.existsByEmail(email)) {
                 throw new EmailAlreadyExistsException("Email " + email + " already exists");
             }

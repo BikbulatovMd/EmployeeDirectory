@@ -50,7 +50,7 @@ public class EmployeeMvcController {
         return "employees/form";
     }
 
-    // сохранение нового (без UPDATE)
+    // сохранение
     @PostMapping
     public String create(@ModelAttribute("employee") @Valid Employee employee) {
         employee.setId(0); // гарантируем INSERT
@@ -64,8 +64,7 @@ public class EmployeeMvcController {
         employeeService.deleteById(id);
         return "redirect:/employees";
     }
-
-    // опции для radio
+    
     private List<EmploymentOption> employmentOptions() {
         return Arrays.asList(
                 new EmploymentOption(1, "Plný úväzok"),

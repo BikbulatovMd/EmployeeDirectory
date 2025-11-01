@@ -41,7 +41,7 @@ public class EmployeeRestController {
     @PostMapping
     public ResponseEntity<ApiResponse<Employee>> create(@Valid @RequestBody Employee input,
                                                         UriComponentsBuilder uri) {
-        input.setId(0); // гарантируем INSERT
+        input.setId(0);
         var saved = service.save(input);
 
         var location = uri.path("/api/employees/{id}").buildAndExpand(saved.getId()).toUri();
@@ -56,7 +56,7 @@ public class EmployeeRestController {
                     .body(ApiResponse.error("Employee with id " + id + " not found"));
         }
         input.setId(id);
-        var saved = service.save(input); // выполнит UPDATE
+        var saved = service.save(input);
         return ResponseEntity.ok(ApiResponse.success(saved, "Employee updated successfully"));
     }
     @DeleteMapping("/{id}")
