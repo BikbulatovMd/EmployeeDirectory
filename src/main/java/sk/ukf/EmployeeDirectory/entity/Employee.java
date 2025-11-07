@@ -7,49 +7,58 @@ import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
+import jakarta.validation.constraints.*;
+
 
 
 @Entity
 @Table(name = "employee")
 public class Employee {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-    @Column(name = "first_name")
-    @NotBlank(message = "First name cannot be empty")
-    @Size(min = 2, max = 50, message = "first name must have 2 between 50 characters")
+    @NotBlank(message = "First name is required")
+    @Size(min = 2, max = 255, message = "First name must be between 2 and 255 characters")
+    @Column(name = "firstName")
     private String firstName;
 
-    @Column(name = "last_name")
-    @NotBlank(message = "Last name cannot be empty")
-    @Size(min = 2, max = 50, message = "last name must have 2 between 50 characters")
+    @NotBlank(message = "Last name is required")
+    @Size(min = 2, max = 255, message = "Last name must be between 2 and 255 characters")
+    @Column(name = "lastName")
     private String lastName;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Past(message = "Birth date must be in the past")
     @Column(name = "birth_date")
     private LocalDate birth_date;
 
-    @Column(name = "email")
-    @NotBlank(message = "Email cannot be empty")
-    @Size(max = 254, message = "Email must be at most 254 characters")
     @Pattern(
-            regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$",
-            flags = Pattern.Flag.CASE_INSENSITIVE,
-            message = "Invalid email format"
+            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = "Email must have a valid format (e.g. name@example.com)"
     )
+    @Column(name = "email")
     private String email;
 
+    @Pattern(
+            regexp = "^\\+421\\d{9}$",
+            message = "Phone must be in +421XXXXXXXXX format"
+    )
     @Column(name = "phone")
     private String phone;
 
+    @NotBlank(message = "Job title is required")
+    @Size(max = 255, message = "Job title must not exceed 255 characters")
     @Column(name = "job_title")
     private String job_title;
 
+    @DecimalMin(value = "0.0", inclusive = false, message = "Salary must be greater than 0")
     @Column(name = "salary")
     private Double salary;
 
+    @NotNull(message = "Full-time status must be specified")
     @Column(name = "full_time")
     private Integer full_time;
 

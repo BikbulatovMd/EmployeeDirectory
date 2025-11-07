@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
-  <title>New employee</title>
+  <title th:text="${employee != null and employee.id > 0} ? 'Edit employee' : 'New employee'">Employee</title>
   <style>
     :root{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--border:#1f2937;--accent:#22c55e;--r:14px}
     body{margin:0;background:linear-gradient(180deg,#0b1020,#0f172a);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial}
@@ -17,6 +17,7 @@
     .btn-success{background:linear-gradient(180deg,#34d399,var(--accent));border-color:#16a34a}
     .btn-ghost{background:transparent}
     a{color:#93c5fd}
+    .error{color:#f87171;font-size:12px;margin-top:6px}
   </style>
 </head>
 <body>
@@ -26,52 +27,73 @@
     <div><a th:href="@{/employees}">Back to list</a></div>
   </div>
 
-  <div class="card">
-    <h1 style="margin-top:0">New employee</h1>
+  <div class="card" th:object="${employee}">
+    <h1 style="margin-top:0"
+        th:text="*{id} != null and *{id} > 0 ? 'Edit employee' : 'New employee'">New employee</h1>
 
-    <form th:action="@{/employees}" th:object="${employee}" method="post">
+    <form th:action="@{/employees}" method="post">
+      <input type="hidden" th:field="*{id}"/>
+
       <div class="row">
         <label>First name</label>
-        <input type="text" th:field="*{firstName}" required>
+        <input type="text" th:field="*{firstName}">
+        <div class="error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
       </div>
+
       <div class="row">
         <label>Last name</label>
-        <input type="text" th:field="*{lastName}" required>
+        <input type="text" th:field="*{lastName}">
+        <div class="error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
       </div>
+
       <div class="row">
         <label>Birth date</label>
         <input type="date" th:field="*{birth_date}">
+        <div class="error" th:if="${#fields.hasErrors('birth_date')}" th:errors="*{birth_date}"></div>
       </div>
+
       <div class="row">
         <label>Email</label>
-        <input type="email" th:field="*{email}">
+        <input type="text" th:field="*{email}">
+        <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
       </div>
+
       <div class="row">
         <label>Phone</label>
         <input type="text" th:field="*{phone}">
+        <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
       </div>
+
       <div class="row">
         <label>Job title</label>
         <select th:field="*{job_title}">
-          <option value="" disabled selected>-- select --</option>
+          <option value="">-- select --</option>
           <option th:each="t : ${jobTitles}" th:value="${t}" th:text="${t}"></option>
         </select>
+        <div class="error" th:if="${#fields.hasErrors('job_title')}" th:errors="*{job_title}"></div>
       </div>
+
       <div class="row">
         <label>Salary</label>
         <input type="number" step="0.01" th:field="*{salary}">
+        <div class="error" th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}"></div>
       </div>
+
       <div class="row">
         <label>Employment</label>
         <div class="radios" th:each="opt : ${employmentOptions}">
           <label>
-            <input type="radio" th:field="*{full_time}" th:value="${opt.code}">
-            <span th:text="${opt.label}">Plný úväzok</span>
+            <input type="radio" th:field="*{full_time}"
+                   th:value="${opt.code != null ? opt.code : (opt.key != null ? opt.key : 1)}">
+            <span th:text="${opt.label != null ? opt.label : (opt.value != null ? opt.value : 'Yes')}">Yes</span>
           </label>
         </div>
+        <div class="error" th:if="${#fields.hasErrors('full_time')}" th:errors="*{full_time}"></div>
       </div>
+
       <div class="row" style="display:flex;gap:10px">
-        <button class="btn btn-success" type="submit">Create</button>
+        <button class="btn btn-success" type="submit"
+                th:text="*{id} != null and *{id} > 0 ? 'Save' : 'Create'">Create</button>
         <a class="btn btn-ghost" th:href="@{/employees}">Cancel</a>
       </div>
     </form>

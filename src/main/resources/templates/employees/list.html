@@ -38,7 +38,11 @@
         <table class="table">
             <thead>
             <tr>
-                <th>ID</th><th>First name</th><th>Last name</th><th>Job title</th><th>Actions</th>
+                <th>ID</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Job title</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -49,6 +53,8 @@
                 <td th:text="${e.job_title}">Software Engineer</td>
                 <td class="actions">
                     <a class="btn btn-primary" th:href="@{|/employees/${e.id}|}">Detail</a>
+                    <!-- ✳️ Новая кнопка Edit -->
+                    <a class="btn btn-success" th:href="@{|/employees/${e.id}/edit|}">Edit</a>
                     <form th:action="@{|/employees/${e.id}|}" method="post">
                         <input type="hidden" name="_method" value="delete"/>
                         <button class="btn btn-danger" type="submit" onclick="return confirm('Delete?')">Delete</button>

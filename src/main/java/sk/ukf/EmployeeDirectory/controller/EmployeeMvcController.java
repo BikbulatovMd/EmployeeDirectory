@@ -8,7 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import sk.ukf.EmployeeDirectory.entity.Employee;
 import sk.ukf.EmployeeDirectory.service.EmployeeService;
-
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +22,6 @@ public class EmployeeMvcController {
 
     private final EmployeeService employeeService;
 
-    // значения для drop-down из application.properties
     @Value("${employee.jobTitles}")
     private String[] jobTitlesProp;
 
@@ -26,45 +29,59 @@ public class EmployeeMvcController {
         this.employeeService = employeeService;
     }
 
-    // список
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
+
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("employee", new Employee());
+        model.addAttribute("jobTitles", List.of(jobTitlesProp));
+        model.addAttribute("employmentOptions", employmentOptions());
+        return "employees/form";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable int id, Model model) {
+        Employee employee = employeeService.findById(id);
+        model.addAttribute("employee", employee);
+        model.addAttribute("jobTitles", List.of(jobTitlesProp));
+        model.addAttribute("employmentOptions", employmentOptions());
+        return "employees/form";
+    }
+
+    @PostMapping
+    public String saveEmployee(@Valid @ModelAttribute("employee") Employee employee,
+                               BindingResult bindingResult,
+                               Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("jobTitles", List.of(jobTitlesProp));
+            model.addAttribute("employmentOptions", employmentOptions());
+            return "employees/form";
+        }
+        employeeService.save(employee);
+        return "redirect:/employees";
+    }
+
     @GetMapping
     public String list(Model model) {
         model.addAttribute("employees", employeeService.findAll());
         return "employees/list";
     }
 
-    // детальная
     @GetMapping("/{id}")
     public String view(@PathVariable int id, Model model) {
         model.addAttribute("employee", employeeService.findById(id));
         return "employees/view";
     }
 
-    // форма добавления
-    @GetMapping("/new")
-    public String showCreateForm(Model model) {
-        Employee empty = new Employee();
-        model.addAttribute("employee", empty);
-        model.addAttribute("jobTitles", List.of(jobTitlesProp));
-        model.addAttribute("employmentOptions", employmentOptions());
-        return "employees/form";
-    }
-
-    // сохранение
-    @PostMapping
-    public String create(@ModelAttribute("employee") @Valid Employee employee) {
-        employee.setId(0); // гарантируем INSERT
-        employeeService.save(employee);
-        return "redirect:/employees";
-    }
-
-    // удаление
     @DeleteMapping("/{id}")
     public String delete(@PathVariable int id) {
         employeeService.deleteById(id);
         return "redirect:/employees";
     }
-    
+
     private List<EmploymentOption> employmentOptions() {
         return Arrays.asList(
                 new EmploymentOption(1, "Plný úväzok"),
